@@ -140,8 +140,7 @@ public class VoiceContent : BaseUnityPlugin
     {
         foreach (var player in PhotonNetwork.PlayerList)
         {
-            GlobalPlayerData globalPlayerData;
-            if (!GlobalPlayerData.TryGetPlayerData(player, out globalPlayerData)) continue;
+            if (!GlobalPlayerData.TryGetPlayerData(player, out var globalPlayerData)) continue;
             
             if (globalPlayerData.inventory.GetItems().Any(item => item.item.name == "Camera"))
             {
