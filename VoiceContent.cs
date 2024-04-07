@@ -18,26 +18,27 @@ public class VoiceContent : BaseUnityPlugin
 {
     public const string modGUID = "Notest.VoiceContent";
     public const string modName = "VoiceContent";
-    public const string modVersion = "1.0.0";
+    public const string modVersion = "0.9.0";
     public const uint modID = 2215935315;
     public static VoiceContent Instance { get; private set; } = null!;
     internal new static ManualLogSource Logger { get; private set; } = null!;
     internal static Harmony? Harmony { get; set; }
 
+    /*
+     * Try not to repeat words and/or phrases
+     * Try to be specific while trying to minimize repetition, so words and phrases that can be used in normal situations don't trigger content
+     * Obviously, don't add sponsors or words like "honey" or "sofi" because these can be used in day to day conversation
+     */
+
     private string[] cussWords = { 
-        "fuck me", 
-        "fuck this",
         "fuck",
         "shit",
-        "holy fuck",
-        "bloody hell",
         "cunt",
         "bitch",
         "bastard",
         "asshole",
         "bullshit",
         "cock",
-        "cocksucker",
         "twat",
         "wanker",
         "bellend",
@@ -51,48 +52,38 @@ public class VoiceContent : BaseUnityPlugin
 
     private string[] youtuberPhrases = {
         "like and subscribe",
-        "hit that notification bell",
-        "hit that like button",
         "don't forget to share",
         "hit that subscribe button",
         "like comment and subscribe",
         "don't forget to subscribe",
         "let's jump right into it",
         "give this video a thumbs up",
-        "click that like button",
-        "click the like button",
-        "smash that like button",
-        "smash the like button",
-        "click that notification bell",
-        "click the notification bell",
-        "smash that notification bell",
-        "smash the notification bell",
-        "click that subscribe button",
-        "click the subscribe button",
-        "smash that subscribe button",
-        "smash the subscribe button",
+        "that like button",
+        "the like button",
+        "that notification bell",
+        "the notification bell",
+        "that subscribe button",
+        "the subscribe button",
         "before starting this video",
     };
 
-    private string[] sponsorPhrases = // Don't add words like "honey" or "sofi" because these can be used in day to day conversations
+    private string[] sponsorPhrases =
     {
-        "this video is sponsored by",
+        
         "i want to give a huge shoutout to our sponsor",
         "i want to give a shoutout to our sponsor",
-        "this video is made possible by",
-        "today's episode is brought to you by",
-        "today's episode is made possible by",
         "i want to take a quick moment to thank",
-        "this video is brought to you by",
+        "video is sponsored by",
+        "video is made possible by",
+        "video is brought to you by",
+        "episode is sponsored by",
+        "episode is brought to you by",
+        "episode is made possible by",
         "before we begin i want to thank",
-        "with my promo code",
-        "with my discount code",
-        "with my star code",
-        "with my creator code",
-        "use my promo code",
-        "use my discount code",
-        "use my star code",
-        "use my creator code",
+        "promo code",
+        "discount code",
+        "star code",
+        "creator code",
         "patreon",
         "kofi",
         "gfuel",
