@@ -5,7 +5,7 @@ Adds content to Content Warning via voice recognition
 If the mod itself is throwing an error then copy and paste the error in [the github issue page](https://github.com/NotestQ/VoiceContent/issues), preferrably describe your issue too  
 If the mod is not throwing errors but it's not recognizing your voice  
  - Make sure you have set your [default microphone](https://www.howtogeek.com/700440/how-to-choose-your-default-microphone-on-windows-10/) correctly.
- - Enable VoiceRecognitionAPI's `LogRecognitionResults` in the mod's config, found at `(ContentWarningDir)/BepInEx/config/me.loaforc.voicewrapperapi.cfg`. If it is getting wrong results try [improving your speech recognition](https://support.microsoft.com/en-us/windows/use-voice-recognition-in-windows-83ff75bd-63eb-0b6c-18d4-6fae94050571#:~:text=In%20Control%20Panel%2C%20select%20Ease,to%20set%20up%20speech%20recognition.)
+ - Change BepInEx's `LogLevels` in its config found at `(ContentWarningDir)/BepInEx/config/BepInEx.cfg`. to include `, Debug` or change it to `All`. If it is getting wrong results try [improving your speech recognition](https://support.microsoft.com/en-us/windows/use-voice-recognition-in-windows-83ff75bd-63eb-0b6c-18d4-6fae94050571#:~:text=In%20Control%20Panel%2C%20select%20Ease,to%20set%20up%20speech%20recognition.)
 
 ## Dependencies
 This depends on my fork of [VoiceRecognitionAPI](https://github.com/NotestQ/VoiceRecognitionAPI) for Content Warning and [Mycelium](https://github.com/RugbugRedfern/Mycelium-Networking-For-Content-Warning)
