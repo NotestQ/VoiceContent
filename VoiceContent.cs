@@ -69,7 +69,6 @@ public class VoiceContent : BaseUnityPlugin
 
     private string[] sponsorPhrases =
     {
-        
         "i want to give a huge shoutout to our sponsor",
         "i want to give a shoutout to our sponsor",
         "i want to take a quick moment to thank",
