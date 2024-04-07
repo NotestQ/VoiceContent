@@ -136,7 +136,7 @@ public class VoiceContent : BaseUnityPlugin
     }
 
 
-    private Photon.Realtime.Player? GetPlayerWithCamera()
+    private static Photon.Realtime.Player? GetPlayerWithCamera()
     {
         foreach (var player in PhotonNetwork.PlayerList)
         {
