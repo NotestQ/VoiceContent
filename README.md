@@ -10,6 +10,12 @@ If the mod is not throwing errors but it's not recognizing your voice
 ## Dependencies
 This depends on my fork of [VoiceRecognitionAPI](https://github.com/NotestQ/VoiceRecognitionAPI) for Content Warning and [Mycelium](https://github.com/RugbugRedfern/Mycelium-Networking-For-Content-Warning)
 
+## Types of content
+Right now, the mod recognizes three types of content: Swearing, sponsor segments and acting like a YouTuber (SpookTuber)
+Examples: "Don't forget to share, like and subscribe!" (YouTuber) "fuck" (swearing) and "This video is sponsored by" (sponsors)
+Saying any of these keywords will trigger content, which will give you views and add a respective comment
+Keep in mind every content fights to be the one that gives views and a comment, so if you film a creature or do any other sort of content and trigger this mod's content it might not appear in the TV
+
 ## Contributing
 This is my actual first time making a git repo, programming specifically in C# AND modding an Unity game so bear with me if something is wrong, multiple things probably are
 
