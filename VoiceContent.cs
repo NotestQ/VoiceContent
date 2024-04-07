@@ -6,6 +6,7 @@ using Photon.Pun;
 using Steamworks;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using VoiceRecognitionAPI;
 
@@ -134,51 +135,29 @@ public class VoiceContent : BaseUnityPlugin
         });
     }
 
-    private bool GetPlayerWithCamera(out Photon.Realtime.Player? playerOut)
-    {
-        Photon.Realtime.Player[] playerList = PhotonNetwork.PlayerList;
-        int i = 0;
-        while (i < playerList.Length)
-        {
-            Photon.Realtime.Player player = playerList[i];
-            GlobalPlayerData globalPlayerData;
-            if (GlobalPlayerData.TryGetPlayerData(player, out globalPlayerData))
-            {
-                using (List<ItemDescriptor>.Enumerator enumerator = globalPlayerData.inventory.GetItems().GetEnumerator())
-                {
-                    while (enumerator.MoveNext())
-                    {
-                        if (enumerator.Current.item.name == "Camera")
-                        {
-                            playerOut = player;
-                            Logger.LogDebug("Found Camera! " + player.NickName + " Has it!");
 
-                            return true;
-                        }
-                    }
-                    goto IL_A2;
-                }
+    private static Photon.Realtime.Player? GetPlayerWithCamera()
+    {
+        foreach (var player in PhotonNetwork.PlayerList)
+        {
+            if (!GlobalPlayerData.TryGetPlayerData(player, out var globalPlayerData)) continue;
+            
+            if (globalPlayerData.inventory.GetItems().Any(item => item.item.name == "Camera"))
+            {
+                return player;
             }
-            goto IL_88;
-            IL_A2:
-            i++;
-            continue;
-             IL_88:
-            Debug.LogError("Cant find playerData for Player: " + player.NickName + " Bug!?");
-            goto IL_A2;
         }
-        playerOut = null;
-        return false;
+
+        return null;
     }
     
     private void HandlePhrase(string phraseType)
     {
-        Photon.Realtime.Player? playerOut;
-        bool cameraSuccess = GetPlayerWithCamera(out playerOut);
+        var player = GetPlayerWithCamera();
 
-        if (cameraSuccess)
+        if (player is not null)
         {
-            if (playerOut!.IsLocal)
+            if (player.IsLocal)
             {
                 Logger.LogDebug("Local player is the one holding the camera, creating provider");
                 CreateProvider(phraseType);
@@ -187,7 +166,7 @@ public class VoiceContent : BaseUnityPlugin
             {
                 Logger.LogDebug("Local player is not the one holding the camera");
                 CSteamID steamID;
-                bool idSuccess = SteamAvatarHandler.TryGetSteamIDForPlayer(playerOut, out steamID);
+                bool idSuccess = SteamAvatarHandler.TryGetSteamIDForPlayer(player, out steamID);
                 if (idSuccess)
                 {
                     Logger.LogDebug("Got steamID successfully");
