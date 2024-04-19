@@ -1,14 +1,19 @@
 using BepInEx;
+using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
 using MyceliumNetworking;
+using Newtonsoft.Json;
 using Photon.Pun;
 using Steamworks;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using UnityEngine;
 using VoiceRecognitionAPI;
+using VoiceContent.Localization;
 
 namespace VoiceContent;
 
@@ -25,94 +30,35 @@ public class VoiceContent : BaseUnityPlugin
     internal new static ManualLogSource Logger { get; private set; } = null!;
     internal static Harmony? Harmony { get; set; }
 
-    /*
-     * Try not to repeat words and/or phrases
-     * Try to be specific while trying to minimize repetition, so words and phrases that can be used in normal situations don't trigger content
-     * Obviously, don't add sponsors or words like "honey" or "sofi" because these can be used in day to day conversation
-     */
-
-    private string[] cussWords = { 
-        "fuck",
-        "shit",
-        "cunt",
-        "bitch",
-        "bastard",
-        "asshole",
-        "bullshit",
-        "cock",
-        "twat",
-        "wanker",
-        "bellend",
-        "slut",
-        "prick",
-        "pussy",
-        "motherfucker",
-        "hell",
-        "balls",
-    };
-
-    private string[] youtuberPhrases = {
-        "like and subscribe",
-        "don't forget to share",
-        "hit that subscribe button",
-        "like comment and subscribe",
-        "don't forget to subscribe",
-        "let's jump right into it",
-        "give this video a thumbs up",
-        "that like button",
-        "the like button",
-        "that notification bell",
-        "the notification bell",
-        "that subscribe button",
-        "the subscribe button",
-        "before starting this video",
-    };
-
-    private string[] sponsorPhrases =
-    {
-        "i want to give a huge shoutout to our sponsor",
-        "i want to give a shoutout to our sponsor",
-        "i want to take a quick moment to thank",
-        "video is sponsored by",
-        "video is made possible by",
-        "video is brought to you by",
-        "episode is sponsored by",
-        "episode is brought to you by",
-        "episode is made possible by",
-        "before we begin i want to thank",
-        "promo code",
-        "discount code",
-        "star code",
-        "creator code",
-        "patreon",
-        "kofi",
-        "gfuel",
-        "temu",
-        "nordvpn",
-        "private internet access",
-        "expressvpn",
-        "audible",
-        "skillshare",
-        "squarespace",
-        "raid shadow legends",
-        "raycon",
-        "hello fresh",
-        "manscaped",
-        "betterhelp",
-        "grammarly",
-        "blue apron",
-        "dollar shave club",
-        "rocket money",
-        "fortnite",
-        "honkai star rail",
-        "genshin impact",
-        "paypal",
-    };
+    private Dictionary<string, List<string>>? localizedLists;
+    private string[]? cussWords;
+    private string[]? youtuberPhrases;
+    private string[]? sponsorPhrases;
+    private ConfigEntry<string>? configLocalizationLanguage;
 
     private void Awake()
     {
         Logger = base.Logger;
         Instance = this;
+
+        configLocalizationLanguage = Config.Bind(
+            "General",
+            "language",
+            "en",
+            "Which language should the VoiceContent mod use for it's localization. (available: en, pt-BR)"
+        );
+
+        cussWords = LocalizationData.GetLocalizedList(configLocalizationLanguage.Value, "cussWords").ToArray();
+        youtuberPhrases = LocalizationData.GetLocalizedList(configLocalizationLanguage.Value, "youtuberPhrases").ToArray();
+        sponsorPhrases = LocalizationData.GetLocalizedList(configLocalizationLanguage.Value, "sponsorPhrases").ToArray();
+        if (cussWords.Any() && youtuberPhrases.Any() && sponsorPhrases.Any())
+        {
+            Logger.LogInfo($"Successfully loaded localization {configLocalizationLanguage.Value} for mod {modGUID}");
+        }
+        else
+        {
+            Logger.LogError($"Failed to load localization {configLocalizationLanguage.Value} for mod {modGUID}");
+        }
 
         Patch();
 
@@ -134,7 +80,6 @@ public class VoiceContent : BaseUnityPlugin
             HandlePhrase("cuss");
         });
     }
-
 
     private static Photon.Realtime.Player? GetPlayerWithCamera()
     {
