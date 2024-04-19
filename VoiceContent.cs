@@ -3,38 +3,43 @@ using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
 using MyceliumNetworking;
-using Newtonsoft.Json;
 using Photon.Pun;
 using Steamworks;
-using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Reflection;
-using UnityEngine;
 using VoiceRecognitionAPI;
 using VoiceContent.Localization;
+using ContentLibrary;
 
 namespace VoiceContent;
 
+/*
+ * Sadly pt-BR doesn't work as of yet because of Windows Voice Recognition and the Vosk Voice Recognition API not being done yet :(
+ * PLANNED: Make VoskVoiceRecognitionAPI to support more languages
+ * TODO: Include checks for language, if WindowsVoiceRecognitionAPI tries to start and your language is one that the API doesn't support it'll break
+ * TODO: Include checks for OS, if you try to load the Windows API in Linux your house explodes
+ */
+
 [BepInDependency("me.loaforc.voicerecognitionapi", BepInDependency.DependencyFlags.HardDependency)]
-[BepInDependency("RugbugRedfern.MyceliumNetworking", BepInDependency.DependencyFlags.HardDependency)]
+[BepInDependency(MyceliumNetworking.MyPluginInfo.PLUGIN_GUID, BepInDependency.DependencyFlags.HardDependency)]
+[BepInDependency(ContentLibrary.MyPluginInfo.PLUGIN_GUID, BepInDependency.DependencyFlags.HardDependency)]
 [BepInPlugin(modGUID, modName, modVersion)]
 public class VoiceContent : BaseUnityPlugin
 {
     public const string modGUID = "Notest.VoiceContent";
     public const string modName = "VoiceContent";
-    public const string modVersion = "0.9.0";
+    public const string modVersion = "1.0.0";
     public const uint modID = 2215935315;
     public static VoiceContent Instance { get; private set; } = null!;
     internal new static ManualLogSource Logger { get; private set; } = null!;
     internal static Harmony? Harmony { get; set; }
 
     private Dictionary<string, List<string>>? localizedLists;
-    private string[]? cussWords;
+    private string[]? swearWords;
     private string[]? youtuberPhrases;
     private string[]? sponsorPhrases;
     private ConfigEntry<string>? configLocalizationLanguage;
+    private ConfigEntry<string>? configVoiceRecognitionAPI;
 
     private void Awake()
     {
@@ -43,15 +48,23 @@ public class VoiceContent : BaseUnityPlugin
 
         configLocalizationLanguage = Config.Bind(
             "General",
-            "language",
+            "Language",
             "en",
-            "Which language should the VoiceContent mod use for it's localization. (available: en, pt-BR)"
+            "Which language should the VoiceContent mod uses for its localization. \n (Available for Windows API: en)"
         );
 
-        cussWords = LocalizationData.GetLocalizedList(configLocalizationLanguage.Value, "cussWords").ToArray();
+        configVoiceRecognitionAPI = Config.Bind(
+            "General",
+            "Voice Recognition Api",
+            "Windows",
+            "Which voice recognition API the VoiceContent mod should use. (Available: Windows)"
+            );
+
+        swearWords = LocalizationData.GetLocalizedList(configLocalizationLanguage.Value, "swearWords").ToArray();
         youtuberPhrases = LocalizationData.GetLocalizedList(configLocalizationLanguage.Value, "youtuberPhrases").ToArray();
         sponsorPhrases = LocalizationData.GetLocalizedList(configLocalizationLanguage.Value, "sponsorPhrases").ToArray();
-        if (cussWords.Any() && youtuberPhrases.Any() && sponsorPhrases.Any())
+
+        if (swearWords.Any() && youtuberPhrases.Any() && sponsorPhrases.Any())
         {
             Logger.LogInfo($"Successfully loaded localization {configLocalizationLanguage.Value} for mod {modGUID}");
         }
@@ -65,19 +78,23 @@ public class VoiceContent : BaseUnityPlugin
         Logger.LogInfo($"{modGUID} v{modVersion} has loaded!");
         MyceliumNetwork.RegisterNetworkObject(this, modID);
 
+        ContentHandler.AssignEvent(new VoiceLikeContentEvent());
+        ContentHandler.AssignEvent(new VoiceSwearContentEvent());
+        ContentHandler.AssignEvent(new VoiceSwearContentEvent());
+
         Voice.ListenForPhrases(youtuberPhrases, (message) => {
-            Logger.LogInfo("YouTuber phrase was said");
+            Logger.LogDebug("YouTuber phrase was said");
             HandlePhrase("like");
         });
 
         Voice.ListenForPhrases(sponsorPhrases, (message) => {
-            Logger.LogInfo("Sponsor segment phrase was said");
+            Logger.LogDebug("Sponsor segment phrase was said");
             HandlePhrase("sponsor");
         });
 
-        Voice.ListenForPhrases(cussWords, (message) => {
-            Logger.LogInfo("Cuss word was said");
-            HandlePhrase("cuss");
+        Voice.ListenForPhrases(swearWords, (message) => {
+            Logger.LogDebug("Swear word was said");
+            HandlePhrase("swear");
         });
     }
 
@@ -125,7 +142,7 @@ public class VoiceContent : BaseUnityPlugin
                 {
                     Logger.LogDebug("Could not get SteamId");
                 }
-                //MyceliumNetwork.RPC(modID, nameof(ReplicateProvider), ReliableType.Reliable, phraseType); 
+                
                 CreateProvider(phraseType);
             }
         }
@@ -145,12 +162,9 @@ public class VoiceContent : BaseUnityPlugin
     private void CreateProvider(string type)
     {
         VoiceContentProvider componentInParent = new VoiceContentProvider(type);
-        if (!ContentPolling.contentProviders.TryAdd(componentInParent, 400000))
+        for (int i = 0; i < 100; i++)
         {
-            Dictionary<ContentProvider, int> dictionary = ContentPolling.contentProviders;
-            ContentProvider key = componentInParent;
-            int seenAmount = dictionary[key];
-            dictionary[key] = seenAmount + 400000;
+            ContentPolling.contentProviders.TryAdd(componentInParent, 400);
         }
     }
     internal static void Patch()

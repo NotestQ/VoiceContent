@@ -14,7 +14,7 @@ namespace VoiceContent.Localization
         {
             ["en"] = new Dictionary<string, List<string>>
             {
-                ["cussWords"] = new List<string>
+                ["swearWords"] = new List<string>
             {
                 "fuck",
                 "shit",
@@ -91,10 +91,10 @@ namespace VoiceContent.Localization
                 "genshin impact",
                 "paypal",
             }
-            },
+            }, // WindowsVoiceRecognitonAPI, VoskVoiceRecognitionAPI
             ["pt-BR"] = new Dictionary<string, List<string>>
             {
-                ["cussWords"] = new List<string>
+                ["swearWords"] = new List<string>
             {
                 "porra",
                 "caralho",
@@ -104,7 +104,8 @@ namespace VoiceContent.Localization
                 "buceta",
                 "filho da puta",
                 "arrombado",
-                "otario"
+                "otario",
+                "pau no cu"
             },
                 ["youtuberPhrases"] = new List<string>
             {
@@ -142,7 +143,7 @@ namespace VoiceContent.Localization
                 "genshin impact",
                 "paypal",
             }
-            }
+            } // VoskVoiceRecognitionAPI
         };
 
         public static List<string> GetLocalizedList(string languageCode, string key)
