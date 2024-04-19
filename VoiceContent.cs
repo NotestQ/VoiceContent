@@ -162,11 +162,9 @@ public class VoiceContent : BaseUnityPlugin
     private void CreateProvider(string type)
     {
         VoiceContentProvider componentInParent = new VoiceContentProvider(type);
-        for (int i = 0; i < 100; i++)
-        {
-            ContentPolling.contentProviders.TryAdd(componentInParent, 400);
-        }
+        ContentHandler.ManualPoll(componentInParent, 1f, 100);
     }
+
     internal static void Patch()
     {
         Harmony ??= new Harmony(modGUID);
