@@ -24,3 +24,8 @@ If you'd like to build the mod for yourself:
  - Set your references  
  - Then contribute??  
  - Build like you would a normal mod  
+
+### Credits
+Thanks a lot to:
+- [leonardomurakami](https://github.com/leonardomurakami) for making translations possible and making me aware of other voice recognition software!
+- [bananasov](https://github.com/bananasov) for rewriting part of my horrible code and partly helping me with getting used to C#!
