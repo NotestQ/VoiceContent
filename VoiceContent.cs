@@ -80,7 +80,7 @@ public class VoiceContent : BaseUnityPlugin
 
         ContentHandler.AssignEvent(new VoiceLikeContentEvent());
         ContentHandler.AssignEvent(new VoiceSwearContentEvent());
-        ContentHandler.AssignEvent(new VoiceSwearContentEvent());
+        ContentHandler.AssignEvent(new VoiceSponsorContentEvent());
 
         Voice.ListenForPhrases(youtuberPhrases, (message) => {
             Logger.LogDebug("YouTuber phrase was said");
