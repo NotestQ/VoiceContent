@@ -4,7 +4,7 @@
     <AssemblyName>Notest.VoiceContent</AssemblyName>
     <Product>VoiceContent</Product>
     <!-- Change to whatever version you're currently on. -->
-    <Version>0.10.2</Version>
+    <Version>0.10.4</Version>
     <ProjectGuid>{FC6CE194-A5D3-4C02-B6EE-91A7EEDA4F4B}</ProjectGuid>
   </PropertyGroup>
   <!-- Project Properties -->

@@ -28,7 +28,7 @@ public class VoiceContent : BaseUnityPlugin
 {
     public const string modGUID = "Notest.VoiceContent";
     public const string modName = "VoiceContent";
-    public const string modVersion = "1.0.0";
+    public const string modVersion = "0.10.4";
     public const uint modID = 2215935315;
     public static VoiceContent Instance { get; private set; } = null!;
     internal new static ManualLogSource Logger { get; private set; } = null!;
@@ -136,7 +136,8 @@ public class VoiceContent : BaseUnityPlugin
                      * From prior testing I'm sure only the camera man needs to create the provider
                      * But if extensive testing comes out inconclusive I might just give up and RPC providers to everyone always
                     */
-                    MyceliumNetwork.RPCTarget(modID, nameof(ReplicateProvider), steamID, ReliableType.Reliable, phraseType);
+                    var localPlayerData = Player.localPlayer.refs.view.Owner;
+                    MyceliumNetwork.RPCTarget(modID, nameof(ReplicateProvider), steamID, ReliableType.Reliable, phraseType, localPlayerData.NickName, localPlayerData.ActorNumber);
                 }
                 else
                 {
@@ -153,15 +154,15 @@ public class VoiceContent : BaseUnityPlugin
     }
 
     [CustomRPC]
-    private void ReplicateProvider(string type)
+    private void ReplicateProvider(string type, string playerNickName, int playerActorNumber)
     {
         Logger.LogDebug($"Asked to replicate provider of type {type}");
-        CreateProvider(type);
+        CreateProvider(type, playerNickName, playerActorNumber);
     }
 
-    private void CreateProvider(string type)
+    private void CreateProvider(string type, string? playerNickName = null, int? playerActorNumber = null)
     {
-        VoiceContentProvider componentInParent = new VoiceContentProvider(type);
+        VoiceContentProvider componentInParent = new VoiceContentProvider(type, playerNickName, playerActorNumber);
         ContentHandler.ManualPoll(componentInParent, 1f, 100);
     }
 

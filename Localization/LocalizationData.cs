@@ -32,7 +32,7 @@ namespace VoiceContent.Localization
                 "pussy",
                 "motherfucker",
                 "hell",
-                "balls",
+                "kill yourself",
             },
                 ["youtuberPhrases"] = new List<string>
             {
@@ -68,7 +68,6 @@ namespace VoiceContent.Localization
                 "star code",
                 "creator code",
                 "patreon",
-                "kofi",
                 "gfuel",
                 "temu",
                 "nordvpn",
@@ -90,6 +89,7 @@ namespace VoiceContent.Localization
                 "honkai star rail",
                 "genshin impact",
                 "paypal",
+                "surfshark",
             }
             }, // WindowsVoiceRecognitonAPI, VoskVoiceRecognitionAPI
             ["pt-BR"] = new Dictionary<string, List<string>>
@@ -105,7 +105,8 @@ namespace VoiceContent.Localization
                 "filho da puta",
                 "arrombado",
                 "otario",
-                "pau no cu"
+                "pau no cu",
+                "se mata",
             },
                 ["youtuberPhrases"] = new List<string>
             {
@@ -120,7 +121,6 @@ namespace VoiceContent.Localization
             {
                 "codigo de desconto",
                 "patreon",
-                "kofi",
                 "gfuel",
                 "temu",
                 "nordvpn",

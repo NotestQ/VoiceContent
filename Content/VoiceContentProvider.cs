@@ -3,14 +3,23 @@ using UnityEngine;
 
 public class VoiceContentProvider : ContentProvider
 {
-    public VoiceContentProvider(string type)
+    public VoiceContentProvider(string type, string? playerNickName, int? playerActorNumber)
     {
+        if (playerNickName != null && playerActorNumber != null)
+        {
+            nickName = playerNickName!;
+            actorNumber = (int)playerActorNumber!;
+        } 
+        else 
+        {
+            nickName = Player.localPlayer.refs.view.Owner.NickName;
+            actorNumber = Player.localPlayer.refs.view.Owner.ActorNumber;
+        }
+
         typeOfComment = type;
     }
     public override void GetContent(List<ContentEventFrame> contentEvents, float seenAmount, Camera camera, float time)
     {
-        string nickName = Player.localPlayer.refs.view.Owner.NickName;
-        int actorNumber = Player.localPlayer.refs.view.Owner.ActorNumber;
 
         switch (typeOfComment)
         {
@@ -30,5 +39,7 @@ public class VoiceContentProvider : ContentProvider
         return;
     }
 
+    string nickName;
+    int actorNumber;
     string typeOfComment;
 }
