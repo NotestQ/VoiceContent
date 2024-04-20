@@ -15,9 +15,9 @@ namespace VoiceContent;
 
 /*
  * Sadly pt-BR doesn't work as of yet because of Windows Voice Recognition and the Vosk Voice Recognition API not being done yet :(
- * PLANNED: Make VoskVoiceRecognitionAPI to support more languages
- * TODO: Include checks for language, if WindowsVoiceRecognitionAPI tries to start and your language is one that the API doesn't support it'll break
- * TODO: Include checks for OS, if you try to load the Windows API in Linux your house explodes
+ * PLANNED?: Make VoskVoiceRecognitionAPI to support more languages
+ * TODO?: Include checks for language, if WindowsVoiceRecognitionAPI tries to start and your language is one that the API doesn't support it'll break
+ * TODO?: Include checks for OS, if you try to load the Windows API in Linux your house explodes
  */
 
 [BepInDependency("me.loaforc.voicerecognitionapi", BepInDependency.DependencyFlags.HardDependency)]
