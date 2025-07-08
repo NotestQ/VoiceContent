@@ -1,5 +1,6 @@
 # VoiceContent
 Adds content to Content Warning via voice recognition
+This is old, has smelly code, and is probably broken. If you want, look into having it use VOSK Voice Recognition and use a better Content ID Library.
 
 ## Issues
 If the mod itself is throwing an error then copy and paste the error in [the github issue page](https://github.com/NotestQ/VoiceContent/issues), preferrably describe your issue too 
